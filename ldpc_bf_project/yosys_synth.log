@@ -1,0 +1,341 @@
+
+ /----------------------------------------------------------------------------\
+ |                                                                            |
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |                                                                            |
+ |  Copyright (C) 2012 - 2020  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |                                                                            |
+ |  Permission to use, copy, modify, and/or distribute this software for any  |
+ |  purpose with or without fee is hereby granted, provided that the above    |
+ |  copyright notice and this permission notice appear in all copies.         |
+ |                                                                            |
+ |  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES  |
+ |  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF          |
+ |  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR   |
+ |  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    |
+ |  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN     |
+ |  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF   |
+ |  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.            |
+ |                                                                            |
+ \----------------------------------------------------------------------------/
+
+ Yosys 0.33 (git sha1 2584903a060)
+
+
+-- Running command `
+read_verilog bf_decoder_top.v syndrome_calc.v conflict_flip.v
+hierarchy -top bf_decoder_top
+proc; flatten; opt -fast; techmap; opt -fast
+abc -lut 6 -fast
+opt_clean
+stat
+ltp -noff
+' --
+
+1. Executing Verilog-2005 frontend: bf_decoder_top.v
+Parsing Verilog input from `bf_decoder_top.v' to AST representation.
+Generating RTLIL representation for module `\bf_decoder_top'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: syndrome_calc.v
+Parsing Verilog input from `syndrome_calc.v' to AST representation.
+Generating RTLIL representation for module `\syndrome_calc'.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: conflict_flip.v
+Parsing Verilog input from `conflict_flip.v' to AST representation.
+Generating RTLIL representation for module `\conflict_flip'.
+Successfully finished Verilog frontend.
+
+4. Executing HIERARCHY pass (managing design hierarchy).
+
+4.1. Analyzing design hierarchy..
+Top module:  \bf_decoder_top
+Used module:     \conflict_flip
+Used module:     \syndrome_calc
+Parameter \N = 2000
+Parameter \M = 1600
+Parameter \Z = 40
+
+4.2. Executing AST frontend in derive mode using pre-parsed AST for module `\conflict_flip'.
+Parameter \N = 2000
+Parameter \M = 1600
+Parameter \Z = 40
+Generating RTLIL representation for module `$paramod$d64cb8bc7c93d7ee1bf52e2953a4f98bab1cdc7d\conflict_flip'.
+Parameter \N = 2000
+Parameter \M = 1600
+Parameter \Z = 40
+
+4.3. Executing AST frontend in derive mode using pre-parsed AST for module `\syndrome_calc'.
+Parameter \N = 2000
+Parameter \M = 1600
+Parameter \Z = 40
+Generating RTLIL representation for module `$paramod$d64cb8bc7c93d7ee1bf52e2953a4f98bab1cdc7d\syndrome_calc'.
+
+4.4. Analyzing design hierarchy..
+Top module:  \bf_decoder_top
+Used module:     $paramod$d64cb8bc7c93d7ee1bf52e2953a4f98bab1cdc7d\conflict_flip
+Used module:     $paramod$d64cb8bc7c93d7ee1bf52e2953a4f98bab1cdc7d\syndrome_calc
+
+4.5. Analyzing design hierarchy..
+Top module:  \bf_decoder_top
+Used module:     $paramod$d64cb8bc7c93d7ee1bf52e2953a4f98bab1cdc7d\conflict_flip
+Used module:     $paramod$d64cb8bc7c93d7ee1bf52e2953a4f98bab1cdc7d\syndrome_calc
+Removing unused module `\conflict_flip'.
+Removing unused module `\syndrome_calc'.
+Removed 2 unused modules.
+
+5. Executing PROC pass (convert processes to netlists).
+
+5.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+5.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 5 switch rules as full_case in process $proc$bf_decoder_top.v:49$4 in module bf_decoder_top.
+Removed a total of 0 dead cases.
+
+5.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 0 assignments to connections.
+
+5.4. Executing PROC_INIT pass (extract init attributes).
+
+5.5. Executing PROC_ARST pass (detect async resets in processes).
+Found async reset \rst_n in `\bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+
+5.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~5 debug messages>
+
+5.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+     1/7: $0\state[0:0]
+     2/7: $0\iter[5:0]
+     3/7: $0\x[1999:0]
+     4/7: $0\decoded_bits[1999:0]
+     5/7: $0\iter_count[5:0]
+     6/7: $0\success[0:0]
+     7/7: $0\done[0:0]
+
+5.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+5.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\bf_decoder_top.\done' using process `\bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+  created $adff cell `$procdff$18864' with positive edge clock and negative level reset.
+Creating register for signal `\bf_decoder_top.\success' using process `\bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+  created $adff cell `$procdff$18865' with positive edge clock and negative level reset.
+Creating register for signal `\bf_decoder_top.\iter_count' using process `\bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+  created $adff cell `$procdff$18866' with positive edge clock and negative level reset.
+Creating register for signal `\bf_decoder_top.\decoded_bits' using process `\bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+  created $adff cell `$procdff$18867' with positive edge clock and negative level reset.
+Creating register for signal `\bf_decoder_top.\x' using process `\bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+  created $adff cell `$procdff$18868' with positive edge clock and negative level reset.
+Creating register for signal `\bf_decoder_top.\iter' using process `\bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+  created $adff cell `$procdff$18869' with positive edge clock and negative level reset.
+Creating register for signal `\bf_decoder_top.\state' using process `\bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+  created $adff cell `$procdff$18870' with positive edge clock and negative level reset.
+
+5.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+5.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 5 empty switches in `\bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+Removing empty process `bf_decoder_top.$proc$bf_decoder_top.v:49$4'.
+Cleaned up 5 empty switches.
+
+5.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module $paramod$d64cb8bc7c93d7ee1bf52e2953a4f98bab1cdc7d\syndrome_calc.
+<suppressed ~492 debug messages>
+Optimizing module $paramod$d64cb8bc7c93d7ee1bf52e2953a4f98bab1cdc7d\conflict_flip.
+<suppressed ~449 debug messages>
+Optimizing module bf_decoder_top.
+<suppressed ~18 debug messages>
+
+6. Executing FLATTEN pass (flatten design).
+Deleting now unused module $paramod$d64cb8bc7c93d7ee1bf52e2953a4f98bab1cdc7d\syndrome_calc.
+Deleting now unused module $paramod$d64cb8bc7c93d7ee1bf52e2953a4f98bab1cdc7d\conflict_flip.
+<suppressed ~2 debug messages>
+
+7. Executing OPT pass (performing simple optimizations).
+
+7.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module bf_decoder_top.
+<suppressed ~120 debug messages>
+
+7.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\bf_decoder_top'.
+<suppressed ~42 debug messages>
+Removed a total of 14 cells.
+
+7.3. Executing OPT_DFF pass (perform DFF optimizations).
+Adding EN signal on $procdff$18864 ($adff) from module bf_decoder_top (D = $procmux$18859_Y, Q = \done).
+Adding EN signal on $procdff$18865 ($adff) from module bf_decoder_top (D = $procmux$18846_Y, Q = \success).
+Adding EN signal on $procdff$18866 ($adff) from module bf_decoder_top (D = $procmux$18835_Y, Q = \iter_count).
+Adding EN signal on $procdff$18867 ($adff) from module bf_decoder_top (D = $procmux$18824_Y, Q = \decoded_bits).
+Adding EN signal on $procdff$18868 ($adff) from module bf_decoder_top (D = $procmux$18812_Y, Q = \x).
+Adding EN signal on $procdff$18869 ($adff) from module bf_decoder_top (D = $procmux$18798_Y, Q = \iter).
+Adding EN signal on $procdff$18870 ($adff) from module bf_decoder_top (D = $procmux$18784_Y, Q = \state).
+
+7.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \bf_decoder_top..
+Removed 6 unused cells and 5436 unused wires.
+<suppressed ~128 debug messages>
+
+7.5. Rerunning OPT passes. (Removed registers in this run.)
+
+7.6. Executing OPT_EXPR pass (perform const folding).
+Optimizing module bf_decoder_top.
+<suppressed ~8 debug messages>
+
+7.7. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\bf_decoder_top'.
+<suppressed ~45 debug messages>
+Removed a total of 15 cells.
+
+7.8. Executing OPT_DFF pass (perform DFF optimizations).
+
+7.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \bf_decoder_top..
+Removed 0 unused cells and 19 unused wires.
+<suppressed ~1 debug messages>
+
+7.10. Finished fast OPT passes.
+
+8. Executing TECHMAP pass (map to technology primitives).
+
+8.1. Executing Verilog-2005 frontend: /usr/bin/../share/yosys/techmap.v
+Parsing Verilog input from `/usr/bin/../share/yosys/techmap.v' to AST representation.
+Generating RTLIL representation for module `\_90_simplemap_bool_ops'.
+Generating RTLIL representation for module `\_90_simplemap_reduce_ops'.
+Generating RTLIL representation for module `\_90_simplemap_logic_ops'.
+Generating RTLIL representation for module `\_90_simplemap_compare_ops'.
+Generating RTLIL representation for module `\_90_simplemap_various'.
+Generating RTLIL representation for module `\_90_simplemap_registers'.
+Generating RTLIL representation for module `\_90_shift_ops_shr_shl_sshl_sshr'.
+Generating RTLIL representation for module `\_90_shift_shiftx'.
+Generating RTLIL representation for module `\_90_fa'.
+Generating RTLIL representation for module `\_90_lcu'.
+Generating RTLIL representation for module `\_90_alu'.
+Generating RTLIL representation for module `\_90_macc'.
+Generating RTLIL representation for module `\_90_alumacc'.
+Generating RTLIL representation for module `\$__div_mod_u'.
+Generating RTLIL representation for module `\$__div_mod_trunc'.
+Generating RTLIL representation for module `\_90_div'.
+Generating RTLIL representation for module `\_90_mod'.
+Generating RTLIL representation for module `\$__div_mod_floor'.
+Generating RTLIL representation for module `\_90_divfloor'.
+Generating RTLIL representation for module `\_90_modfloor'.
+Generating RTLIL representation for module `\_90_pow'.
+Generating RTLIL representation for module `\_90_pmux'.
+Generating RTLIL representation for module `\_90_demux'.
+Generating RTLIL representation for module `\_90_lut'.
+Successfully finished Verilog frontend.
+
+8.2. Continuing TECHMAP pass.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=3:B_SIGNED=0:B_WIDTH=3:Y_WIDTH=3:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=3:B_SIGNED=0:B_WIDTH=3:Y_WIDTH=3:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=3:B_SIGNED=0:B_WIDTH=3:Y_WIDTH=3:394426c56d1a028ba8fdd5469b163e04011def47.
+Using extmapper simplemap for cells of type $reduce_or.
+Using extmapper simplemap for cells of type $xor.
+Using extmapper simplemap for cells of type $eq.
+Using extmapper simplemap for cells of type $adffe.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=6:B_SIGNED=0:B_WIDTH=1:Y_WIDTH=6:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=6:B_SIGNED=0:B_WIDTH=1:Y_WIDTH=6:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=6:B_SIGNED=0:B_WIDTH=1:Y_WIDTH=6:394426c56d1a028ba8fdd5469b163e04011def47.
+Using extmapper simplemap for cells of type $or.
+Using extmapper simplemap for cells of type $ne.
+Using extmapper simplemap for cells of type $not.
+Using extmapper simplemap for cells of type $mux.
+Using template $paramod$c5c783b17ab1d780abfad8cfe6563a0a7b47a3b0\_90_pmux for cells of type $pmux.
+Using template $paramod$4d6dda8db2bd519add0e3aee95769fd6145de226\_90_pmux for cells of type $pmux.
+Using template $paramod$ed0bb9616228df1e6c226f91f8133e751815f1b1\_90_pmux for cells of type $pmux.
+Running "alumacc" on wrapper $extern:wrap:$ge:A_SIGNED=0:A_WIDTH=3:B_SIGNED=0:B_WIDTH=3:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$ge:A_SIGNED=0:A_WIDTH=3:B_SIGNED=0:B_WIDTH=3:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$ge:A_SIGNED=0:A_WIDTH=3:B_SIGNED=0:B_WIDTH=3:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47.
+Using extmapper simplemap for cells of type $reduce_and.
+Using template $paramod$78e969f2586efcf3a5b0b0440bcca0db83d5cca2\_90_alu for cells of type $alu.
+Using extmapper simplemap for cells of type $and.
+Using template $paramod$32efbfac1c4dc57230cf86180788fdfd12e3b511\_90_alu for cells of type $alu.
+Using template $paramod\_90_lcu\WIDTH=32'00000000000000000000000000000011 for cells of type $lcu.
+Using extmapper simplemap for cells of type $pos.
+Using template $paramod\_90_lcu\WIDTH=32'00000000000000000000000000000110 for cells of type $lcu.
+No more expansions possible.
+<suppressed ~135025 debug messages>
+
+9. Executing OPT pass (performing simple optimizations).
+
+9.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module bf_decoder_top.
+<suppressed ~156645 debug messages>
+
+9.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\bf_decoder_top'.
+<suppressed ~13278 debug messages>
+Removed a total of 4426 cells.
+
+9.3. Executing OPT_DFF pass (perform DFF optimizations).
+
+9.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \bf_decoder_top..
+Removed 17004 unused cells and 275819 unused wires.
+<suppressed ~17005 debug messages>
+
+9.5. Finished fast OPT passes.
+
+10. Executing ABC pass (technology mapping using ABC).
+
+10.1. Extracting gate netlist of module `\bf_decoder_top' to `<abc-temp-dir>/input.blif'..
+Extracted 61979 gates and 65990 wires to a netlist network with 4008 inputs and 4018 outputs.
+
+10.1.1. Executing ABC.
+Running ABC command: "<yosys-exe-dir>/yosys-abc" -s -f <abc-temp-dir>/abc.script 2>&1
+ABC: ABC command line: "source <abc-temp-dir>/abc.script".
+ABC: 
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_lut <abc-temp-dir>/lutdefs.txt 
+ABC: + strash 
+ABC: + dretime 
+ABC: + if 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+
+10.1.2. Re-integrating ABC results.
+ABC RESULTS:              $lut cells:    10701
+ABC RESULTS:        internal signals:    57964
+ABC RESULTS:           input signals:     4008
+ABC RESULTS:          output signals:     4018
+Removing temp directory.
+
+11. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \bf_decoder_top..
+Removed 0 unused cells and 26087 unused wires.
+<suppressed ~2002 debug messages>
+
+12. Printing statistics.
+
+=== bf_decoder_top ===
+
+   Number of wires:               8804
+   Number of wire bits:          45119
+   Number of public wires:         107
+   Number of public wire bits:   34418
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:              14716
+     $_DFFE_PN0P_                 4015
+     $lut                        10701
+
+13. Executing LTP pass (find longest path).
+
+Longest topological path in bf_decoder_top (length=9):
+    0: \x [799]
+    1: $abc$278872$new_n10409_ (via $abc$278872$auto$blifparse.cc:525:parse_blif$281254)
+    2: $abc$278872$new_n10566_ (via $abc$278872$auto$blifparse.cc:525:parse_blif$281411)
+    3: $abc$278872$new_n10563_ (via $abc$278872$auto$blifparse.cc:525:parse_blif$281408)
+    4: $abc$278872$new_n10562_ (via $abc$278872$auto$blifparse.cc:525:parse_blif$281407)
+    5: $abc$278872$new_n10460_ (via $abc$278872$auto$blifparse.cc:525:parse_blif$281305)
+    6: $abc$278872$new_n10344_ (via $abc$278872$auto$blifparse.cc:525:parse_blif$281189)
+    7: $abc$278872$new_n8030_ (via $abc$278872$auto$blifparse.cc:525:parse_blif$278875)
+    8: $abc$278872$new_n16720_ (via $abc$278872$auto$blifparse.cc:525:parse_blif$287565)
+    9: $procmux$18798.Y [1] (via $abc$278872$auto$blifparse.cc:525:parse_blif$287564)
+   ff: \iter [1] (via $auto$ff.cc:266:slice$32308)
+
+End of script. Logfile hash: e5dd62b5b7, CPU: user 55.92s system 3.96s, MEM: 2244.75 MB peak
+Yosys 0.33 (git sha1 2584903a060)
+Time spent: 29% 8x opt_expr (18 sec), 27% 1x techmap (16 sec), ...
