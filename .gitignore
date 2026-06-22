@@ -1,0 +1,8 @@
+.DS_Store
+~$*.docx
+
+# Local build outputs
+day5_bf_curve
+
+# Day5 generated plots
+day5_*.png
