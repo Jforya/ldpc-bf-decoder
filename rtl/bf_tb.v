@@ -29,6 +29,11 @@ module bf_tb;
     integer idx;
     integer fail_count;
     integer trace_fd;
+    integer plusarg_ok;
+    reg [8*256-1:0] tv_in_file;
+    reg [8*256-1:0] tv_gold_bits_file;
+    reg [8*256-1:0] tv_gold_flags_file;
+    reg [8*256-1:0] trace_rtl_file;
 
     bf_decoder_top #(
         .N(N),
@@ -71,13 +76,23 @@ module bf_tb;
     end
 
     initial begin
-        $readmemb("tv_in.txt", tv_in);
-        $readmemb("tv_gold_bits.txt", tv_gold);
-        $readmemb("tv_gold_flags.txt", tv_flags);
+        tv_in_file = "tv_in.txt";
+        tv_gold_bits_file = "tv_gold_bits.txt";
+        tv_gold_flags_file = "tv_gold_flags.txt";
+        trace_rtl_file = "trace_rtl.txt";
 
-        trace_fd = $fopen("trace_rtl.txt", "w");
+        plusarg_ok = $value$plusargs("TV_IN=%s", tv_in_file);
+        plusarg_ok = $value$plusargs("TV_GOLD_BITS=%s", tv_gold_bits_file);
+        plusarg_ok = $value$plusargs("TV_GOLD_FLAGS=%s", tv_gold_flags_file);
+        plusarg_ok = $value$plusargs("TRACE_RTL=%s", trace_rtl_file);
+
+        $readmemb(tv_in_file, tv_in);
+        $readmemb(tv_gold_bits_file, tv_gold);
+        $readmemb(tv_gold_flags_file, tv_flags);
+
+        trace_fd = $fopen(trace_rtl_file, "w");
         if(trace_fd == 0) begin
-            $display("FAIL: cannot open trace_rtl.txt");
+            $display("FAIL: cannot open trace file %0s", trace_rtl_file);
             $finish;
         end
 
