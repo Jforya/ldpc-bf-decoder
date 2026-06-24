@@ -6,3 +6,14 @@ day5_bf_curve
 
 # Day5 generated plots
 day5_*.png
+
+# Local RTL simulation environment and outputs
+._downloads/
+_tools/
+sim.vvp
+tv_in.txt
+tv_gold_bits.txt
+tv_gold_flags.txt
+tv_summary.csv
+trace_gold.txt
+trace_rtl.txt
